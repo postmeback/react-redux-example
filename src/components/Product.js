@@ -1,19 +1,37 @@
-import { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { useEffect } from "react";
+import { Alert, Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { add } from "../store/cartSlice";
+import { setProducts } from "../store/productSlice";
 
 const Product = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+
+  const { data: products, status } = useSelector((state) => state.products);
 
   useEffect(() => {
-       
-       fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((result) => setProducts(result))
- 
-    }, [])
+    //dispatch an action for fetchProducts
+    dispatch(setProducts());
+  }, [dispatch]);
 
-  const Cards = products.map(product => 
+  if (status === "Loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "error") {
+    return (
+      <Alert variant="danger" key="danger">
+        Something went wrong.
+      </Alert>
+    );
+  }
+
+  const addToCart = (product) => {
+    dispatch(add(product));
+  };
+
+  const Cards = products.map((product) => (
     <div className="col-md-3" style={{ marginBottom: "10px" }}>
       <Card key={product.id} className="h-100">
         <div className="text-center">
@@ -29,19 +47,18 @@ const Product = () => {
         </Card.Body>
 
         <Card.Footer style={{ background: "white" }}>
-          <Button variant="primary">Add to Cart</Button>
+          <Button variant="primary" onClick={() => addToCart(product)}>
+            Add to Cart
+          </Button>
         </Card.Footer>
       </Card>
     </div>
-
-)
+  ));
 
   return (
     <>
       <h1>Product DashBoard</h1>
-      <div className="row">
-        {Cards}
-      </div>
+      <div className="row">{Cards}</div>
     </>
   );
 };

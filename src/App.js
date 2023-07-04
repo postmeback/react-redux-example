@@ -1,13 +1,12 @@
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import Cart from "./components/Cart";
-import Product from "./components/Product";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
-  Route
+  Route,
 } from "react-router-dom";
 import RootLayout from "./components/RootLayout";
 
