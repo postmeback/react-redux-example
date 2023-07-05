@@ -5,8 +5,11 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 
 const NavBarPanel = () => {
-
   const cartProducts = useSelector((state) => state.cart);
+
+  const getTotalCount = () => {
+    return cartProducts.reduce((total, product) => total + product.count, 0);
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -21,7 +24,7 @@ const NavBarPanel = () => {
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
             <Nav.Link to="/cart" as={Link}>
-              My Bag {cartProducts.length}
+              My Bag {getTotalCount()}
             </Nav.Link>
           </Navbar.Text>
         </Navbar.Collapse>

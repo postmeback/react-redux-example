@@ -32,7 +32,7 @@ const Product = () => {
   };
 
   const Cards = products.map((product) => (
-    <div className="col-md-3" style={{ marginBottom: "10px" }}>
+    <div className="col-md-3" style={{ marginBottom: "10px" }} key={product.id}>
       <Card key={product.id} className="h-100">
         <div className="text-center">
           <Card.Img

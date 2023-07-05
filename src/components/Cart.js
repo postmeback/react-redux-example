@@ -1,49 +1,63 @@
-import { useSelector } from "react-redux/es/hooks/useSelector";
-import { Card } from "react-bootstrap";
-import { Button } from "react-bootstrap";
-import { remove } from "../store/cartSlice";
-import { useDispatch } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { Card, Button } from "react-bootstrap";
+import { remove, decreaseCountInCart, increaseCountInCart } from "../store/cartSlice";
 
 const Cart = () => {
+  const cartItems = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
-const products = useSelector(state => state.cart);
+  const removeFromCart = (id) => {
+    dispatch(remove({ id }));
+  };
 
-const dispatch = useDispatch();
+  const decreaseCount = (id) => {
+    dispatch(decreaseCountInCart({ id }));
+  };
 
-const removeFromCart = (id) => {
-    dispatch(remove(id));
-}
+  const increaseCount = (id) => {
+    dispatch(increaseCountInCart({ id }));
+  };
 
-const Cards = products.map(product => 
-    <div className="col-md-12" style={{ marginBottom: "10px" }}>
-      <Card key={product.id} className="h-100">
+  const renderCartItems = cartItems.map((item) => (
+   
+    <div className="col-md-4" style={{ marginBottom: "10px" }} key={item.id} hidden={ item.count <= 0}>
+      <Card className="h-100">
         <div className="text-center">
           <Card.Img
             variant="top"
-            src={product.image}
+            src={item.image}
             style={{ width: "100px", height: "130px" }}
           />
         </div>
         <Card.Body>
-          <Card.Title>{product.title}</Card.Title>
-          <Card.Text>INR {product.price}</Card.Text>
+          <Card.Title>{item.title}</Card.Title>
+          <Card.Text>INR {item.price * item.count}</Card.Text>
+          <div className="d-flex align-items-center justify-content-center">
+            <Button
+              variant="outline-secondary"
+              onClick={() => decreaseCount(item.id)}
+              disabled={item.count === 0}
+            >
+              -
+            </Button>
+            <div className="mx-2">{item.count}</div>
+            <Button variant="outline-secondary" onClick={() => increaseCount(item.id)}>
+              +
+            </Button>
+          </div>
         </Card.Body>
-
-        <Card.Footer style={{ background: "white" }}>
-          <Button variant="danger" onClick={() => removeFromCart(product.id)}>Remove Item</Button>
-        </Card.Footer>
+        {item.count > 0 && (
+          <Card.Footer style={{ background: "white" }}>
+            <Button variant="danger" onClick={() => removeFromCart(item.id)}>
+              Remove Item
+            </Button>
+          </Card.Footer>
+        )}
       </Card>
     </div>
-    )
+  ));
 
-    return (
-        <>
-          <div className="row">
-            {Cards}
-          </div>
-        </>
-      );
-}
+  return <div className="row">{renderCartItems}</div>;
+};
 
 export default Cart;
