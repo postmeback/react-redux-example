@@ -14,15 +14,32 @@ export const setProducts = createAsyncThunk("products/get", async () => {
 const productSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
-
+  reducers: {
+    increaseCount: (state, action) => {
+      const { id } = action.payload;
+      const product = state.data.find((item) => item.id === id);
+      if (product) {
+        product.count += 1;
+      }
+    },
+    decreaseCount: (state, action) => {
+      const { id } = action.payload;
+      const product = state.data.find((item) => item.id === id);
+      if (product && product.count > 0) {
+        product.count -= 1;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(setProducts.pending, (state, action) => {
         state.status = "loading";
       })
       .addCase(setProducts.fulfilled, (state, action) => {
-        state.data = action.payload;
+        state.data = action.payload.map((product) => ({
+          ...product,
+          count: 0,
+        }));
         state.status = "idle";
       })
       .addCase(setProducts.rejected, (state, action) => {
@@ -31,4 +48,5 @@ const productSlice = createSlice({
   },
 });
 
+export const { increaseCount, decreaseCount } = productSlice.actions;
 export default productSlice.reducer;

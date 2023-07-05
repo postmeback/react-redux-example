@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Card, Button } from "react-bootstrap";
-import { remove } from "../store/cartSlice";
+import { remove, decreaseCountInCart, increaseCountInCart } from "../store/cartSlice";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart);
@@ -10,16 +10,17 @@ const Cart = () => {
     dispatch(remove({ id }));
   };
 
-  const increaseCount = (id) => {
-    // Implement logic to increase item count
+  const decreaseCount = (id) => {
+    dispatch(decreaseCountInCart({ id }));
   };
 
-  const decreaseCount = (id) => {
-    
+  const increaseCount = (id) => {
+    dispatch(increaseCountInCart({ id }));
   };
 
   const renderCartItems = cartItems.map((item) => (
-    <div className="col-md-4" style={{ marginBottom: "10px" }} key={item.id}>
+   
+    <div className="col-md-4" style={{ marginBottom: "10px" }} key={item.id} hidden={ item.count <= 0}>
       <Card className="h-100">
         <div className="text-center">
           <Card.Img
@@ -40,20 +41,14 @@ const Cart = () => {
               -
             </Button>
             <div className="mx-2">{item.count}</div>
-            <Button
-              variant="outline-secondary"
-              onClick={() => increaseCount(item.id)}
-            >
+            <Button variant="outline-secondary" onClick={() => increaseCount(item.id)}>
               +
             </Button>
           </div>
         </Card.Body>
         {item.count > 0 && (
           <Card.Footer style={{ background: "white" }}>
-            <Button
-              variant="danger"
-              onClick={() => removeFromCart(item.id)}
-            >
+            <Button variant="danger" onClick={() => removeFromCart(item.id)}>
               Remove Item
             </Button>
           </Card.Footer>
